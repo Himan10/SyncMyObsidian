@@ -1,5 +1,7 @@
 files=()
-logFilePath="/home/hi-man/GoogleDriveAPI/ObsidianServiceLogs"
+cwd=$(pwd)
+logFilePath="/home/hi-man/SyncMyObsidian/ObsidianServiceLogs"
+jsonFilePath="/home/hi-man/SyncMyObsidian/modified_files.json"
 
 function compareTwoDates() {
 	ObsidianStartingDate=$(head -n 1 $logFilePath)
@@ -14,11 +16,11 @@ function compareTwoDates() {
 	fi
 
 	fileModificationEpoch=$(echo $1 | cut -d ' ' -f 1)
-	fileModificationEpoch=$(expr $fileModificationEpoch)
+	fileModificationEpoch=$(expr "$fileModificationEpoch")
 
 	if [ $fileModificationEpoch -gt $epochObsDate ]; then
 		files+=("$filename")
-		printf "%q\n" "$filename" >> ObsidianServiceLogs
+		printf "%q\n" "$filename" >> $logFilePath
 	fi
 }
 
@@ -35,7 +37,7 @@ function findModifyTime() {
 	# Add the file contents into an array; start reading file from 5th file
 	while read -r line; do
 		files+=("$line")
-	done < <(sed '1,4d' ./ObsidianServiceLogs)
+	done < <(sed '1,4d' $logFilePath)
 
 	# create a JSON array from the bash array of strings
 	jsonarray=$(printf "%s\n" "${files[@]}" | jq -R . | jq -s .)
@@ -43,7 +45,7 @@ function findModifyTime() {
 	# create a json object now
 	json_object=$(jq -n --argjson files "${jsonarray}" '{ "files": $files }')
 
-	(echo $json_object | json_pp) >> json_object
+	(echo $json_object | /usr/bin/core_perl/json_pp) > $jsonFilePath
 }
 
 function createLogs() {
