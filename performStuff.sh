@@ -1,7 +1,7 @@
 files=()
 cwd=$(pwd)
-logFilePath="/home/hi-man/SyncMyObsidian/ObsidianServiceLogs"
-jsonFilePath="/home/hi-man/SyncMyObsidian/modified_files.json"
+logFilePath="/home/$(whoami)/SyncMyObsidian/ObsidianServiceLogs"
+jsonFilePath="/home/$(whoami)/SyncMyObsidian/modified_files.json"
 
 function compareTwoDates() {
 	ObsidianStartingDate=$(head -n 1 $logFilePath)
@@ -29,7 +29,7 @@ function findModifyTime() {
 	# -o flag is used to evalute the later expression only if the preceeding one fails
 	#export -f compareTwoDates
 	#export logFilePath
-	find /home/hi-man/Documents/Obsidian\ Vault -type d -name ".*" -prune -o -exec stat --format="%Y %n" {} \; | while read -r line
+	find /home/$(whoami)/Documents/Obsidian\ Vault -type d -name ".*" -prune -o -exec stat --format="%Y %n" {} \; | while read -r line
 	do 
 		compareTwoDates "$line"
 	done
