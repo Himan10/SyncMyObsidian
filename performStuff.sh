@@ -1,7 +1,11 @@
 files=()
 cwd=$(pwd)
-logFilePath="/home/$(whoami)/SyncMyObsidian/ObsidianServiceLogs"
-jsonFilePath="/home/$(whoami)/SyncMyObsidian/modified_files.json"
+logsDir="/home/$(whoami)/SyncMyObsidian/logs"
+if ! [ -d "$logsDir" ]; then
+	mkdir "$logsDir"
+fi
+logFilePath="/home/$(whoami)/SyncMyObsidian/logs/ObsidianServiceLogs"
+jsonFilePath="/home/$(whoami)/SyncMyObsidian/logs/modified_files.json"
 
 function compareTwoDates() {
 	ObsidianStartingDate=$(head -n 1 $logFilePath)
