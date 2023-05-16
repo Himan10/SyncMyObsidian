@@ -1,38 +1,68 @@
+function generateQueryForMultipleFiles() {
+	let query = ""
+	const fileNamePattern = new RegExp("\/[^\/]+$")
+	const files = require("./modified_files.json")
+	const filesLength = files.files.length
+	files.files.forEach((element, index) => {
+		element = element.replace(/'/g, "\\'")
+		element = fileNamePattern.exec(element)[0].substr(1)
+		// if last element then don't append the or operator in string
+		query += `name='${element}'`
+		if (index != filesLength-1) {
+			query += ' or '
+		}
+	})
+	query += ' and trashed=false'
+	console.log(query)
+	return query
+}
+
+function filesMetadataFromDrive(drive) {
+	const query = generateQueryForMultipleFiles()
+	drive.files.list(
+		{
+			q: query,
+			fields: 'nextPageToken, files(id, name, mimeType, createdTime)'
+		},
+		(error, response) => {
+			if (error) {
+				throw error;
+			} else {
+				const files = response.data.files;
+				files.forEach((file) => {
+					console.log(`${file.id}, ${file.name}`)
+				})
+			}
+		}
+	)
+}
+
+
 // google apis module import
 const { google } = require("googleapis");
 
-// import fs module
-const fs = require("fs");
-
-// import path module
-const path = require("path");
+// Adding scopes
+const scopes = [
+	"https://www.googleapis.com/auth/drive"
+]
 
 // import the credentials from the file
-const credentials = require("./.credentials.json")
+const credentials = require("./credentials.json")
 
-// set-up creds
-const CLIENT_ID = credentials.web.client_id
-const CLIENT_SECRET = credentials.web_client_secret
+// set-up creds (create a JWT Token)
+const JWTClient = new google.auth.JWT(
+	credentials.client_email, null,
+	credentials.private_key, scopes
+)
 
-// Set up the Redirect URI and refresh token
-const REDIRECT_URI = credentials.web.redirect_uris[0]
-const REFRESH_TOKEN = credentials.outhPlayground.refresh_token
+JWTClient.authorize((err, tokens) => {
+	if (err) {
+		console.error(err);
+		return;
+	}
+})
 
-// using the Oauth for authentication aur authorising the requests
-const oauth2client = new google.auth.OAuth2(
-	CLIENT_ID,
-	CLIENT_SECRET,
-	REDIRECT_URI
-);
+// Once the auth is set-up, get the drive
+const drive = google.drive({version: 'v3', auth: JWTClient})
 
-// setting our oauth credentials
-oauth2client.setCredentials({ refresh_token: REFRESH_TOKEN });
-
-// initialize the google drive API
-const drive = google.drive({
-	version: 'v3',
-	auth: oauth2client,
-});
-
-console.log(oauth2client)
-console.log(drive)
+filesMetadataFromDrive(drive)
