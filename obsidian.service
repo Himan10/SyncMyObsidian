@@ -1,0 +1,15 @@
+# this is a sample systemd service file for obsidian appImage
+[Unit]
+Description=Obsidian appImage service file
+
+[Service]
+User=hi-man
+Type=simple
+Environment=DISPLAY=:0
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+ExecStartPre=/bin/bash /home/hi-man/SyncMyObsidian/performStuff.sh createLogs
+ExecStart=/home/hi-man/Applications/Obsidian-1.1.16_d65b59bd9180b1d95098945fe63107ac.AppImage
+ExecStop=/bin/bash /home/hi-man/SyncMyObsidian/performStuff.sh
+
+[Install]
+WantedBy=default.target
