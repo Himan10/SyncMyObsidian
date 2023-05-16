@@ -3,7 +3,7 @@
 function generateQueryForMultipleFiles() {
 	let query = ""
 	const fileNamePattern = new RegExp("\/[^\/]+$")
-	const files = require("./modified_files.json")
+	const files = require("./logs/modified_files.json")
 	const filesLength = files.files.length
 	if (filesLength < 1 || (filesLength == 1 && files.files[0] == "")) {
 		return -1
