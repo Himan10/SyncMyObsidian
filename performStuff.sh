@@ -65,4 +65,5 @@ if [ -n "$1" ]; then
 	"$1"
 else
 	findModifyTime
+	/bin/node /home/$(whoami)/SyncMyObsidian/index.js && notify-send "index.js" "Done"
 fi
