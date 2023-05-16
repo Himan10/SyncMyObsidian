@@ -1,6 +1,6 @@
 # Sync. easy with SyncMyObsidian
 <p align="center">
-  <img src="obsidianTemplatePreview.png" alt="SyncMyObsidian Template Preview" width=800 height=400>
+  <img src="obsidianTemplatePreview.png" alt="SyncMyObsidian Template Preview">
   </p>
 
 ## Main Motivation
