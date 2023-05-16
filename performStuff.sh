@@ -20,7 +20,7 @@ function compareTwoDates() {
 
 	if [ $fileModificationEpoch -gt $epochObsDate ]; then
 		files+=("$filename")
-		printf "%q\n" "$filename" >> $logFilePath
+		printf "$filename\n" >> $logFilePath
 	fi
 }
 
