@@ -1,2 +1,4 @@
 # SyncMyObsidian
-This repository allows you to synchronize files present in the obsidian vault between Obsidian desktop application (or an appImage) and Obsidian mobile application.
+<p align="center">
+  <img src="obsidianTemplatePreview.png" alt="SyncMyObsidian Template Preview" width=900 height=400>
+  </p>
