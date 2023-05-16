@@ -1,4 +1,4 @@
-# Sync. easy with SyncMyObsidian
+# Sync. With Ease
 <p align="center">
   <img src="obsidianTemplatePreview.png" alt="SyncMyObsidian Template Preview">
   </p>
