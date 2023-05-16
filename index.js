@@ -1,8 +1,13 @@
+#!/bin/node
+
 function generateQueryForMultipleFiles() {
 	let query = ""
 	const fileNamePattern = new RegExp("\/[^\/]+$")
 	const files = require("./modified_files.json")
 	const filesLength = files.files.length
+	if (filesLength < 1 || (filesLength == 1 && files.files[0] == "")) {
+		return -1
+	}
 	files.files.forEach((element, index) => {
 		element = element.replace(/'/g, "\\'")
 		element = fileNamePattern.exec(element)[0].substr(1)
@@ -19,6 +24,9 @@ function generateQueryForMultipleFiles() {
 
 function filesMetadataFromDrive(drive) {
 	const query = generateQueryForMultipleFiles()
+	if (query == -1) {
+		return query
+	}
 	drive.files.list(
 		{
 			q: query,
