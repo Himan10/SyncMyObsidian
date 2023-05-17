@@ -69,5 +69,10 @@ if [ -n "$1" ]; then
 	"$1"
 else
 	findModifyTime
-	/bin/node /home/$(whoami)/SyncMyObsidian/index.js && notify-send "index.js" "Done"
+	/bin/node /home/$(whoami)/SyncMyObsidian/index.js
+	if [ $? -gt 0 ]; then
+		notify-send -u critical "SyncMyObsidian/index.js" "Something went wrong"
+	else
+		notify-send -u normal "SyncMyObsidian/index.js" "logs are written to logs/index_file_logs"
+	fi	
 fi
