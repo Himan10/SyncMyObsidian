@@ -1,6 +1,6 @@
 # Sync. With Ease
 <p align="center">
-  <img src="obsidianTemplatePreview.png" alt="SyncMyObsidian Template Preview">
+  <img src="img/obsidianTemplatePreview.png" alt="SyncMyObsidian Template Preview">
   </p>
 
 ## Main Motivation
@@ -11,6 +11,12 @@ To put it simply, suppose you have downloaded the Obsidian Application and creat
 Here's where this repository comes in. It takes care of the synchronization process and gives you the freedom to write notes and read them on any device where you're logged in with the same account. However, you will need to make some effort as well since this repository is not intelligent enough to do everything on its own.
 
 ## Main Functionality
+So, basically this project's working is very simple and easily understandable if you're a linux user and has worked with systemd service files, or bash in general. I'd like to mention one thing that is very important for the end users, ***overall development of this project is done on Linux***. 
+
+It doesn't follow any windows development patterns and architecture, so if you're a windows user, unfortunately, you won't get much but you can make a use of the Javascript file named `index.js` which focuses on how to upload files to the google drive. 
+<p align="center">
+  <img src="img/workflow.png" alt="SyncMyObsidian Workflow">
+  </p>
 
 ## Setting up the project
 
