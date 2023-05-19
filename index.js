@@ -4,6 +4,7 @@
 const { google } = require("googleapis");
 const fs = require("fs");
 const os = require("os");
+const mime = require("mime");
 
 const logFilePath = os.userInfo().homedir + "/SyncMyObsidian/logs/index_file_logs"
 const writeStream = fs.createWriteStream(logFilePath)
@@ -36,7 +37,9 @@ function filesDataFromDrive(drive) {
         // can be used to check if files are present on google drive or not
 	// methods which are part of `drive` returns Promise; which means the later
 	// part will execute if they method is still processing
+
         const [query, filesPaths, localFileNames] = generateQueryForMultipleFiles()
+	const folderIdentifyPattern = RegExp("Obsidian Vault\/(.+?)(\/)")
         var filesNotPresentOnDrive = []
         if (query == -1) {
                 return query
@@ -53,27 +56,67 @@ function filesDataFromDrive(drive) {
                                 const files = response.data.files;
                                 files.forEach((file) => {
                                         fileIndex = localFileNames.indexOf(file.name)
-                                        if (fileIndex > -1) {
-                                                drive.files.update(
-                                                        {
-                                                                fileId: file.id,
-                                                                media: {
-                                                                        mimeType: file.mimeType,
-                                                                        body: fs.createReadStream(filesPaths[fileIndex])
-                                                                }
-                                                        },
-                                                        (error, response) => {
-                                                                if (error) {
-                                                                        throw error
-                                                                } else {
-                                                                        writeStream.write(`File ${file.name} Uploaded Successfully`)
-                                                                }
+                                        drive.files.update(
+                                        	{
+                                                	fileId: file.id,
+                                                        media: {
+                                                        	mimeType: file.mimeType,
+                                                                body: fs.createReadStream(filesPaths[fileIndex])
+                                                       	}
+                                                },
+                                                (error, response) => {
+                                                	if (error) {
+                                                        	throw error
+                                                       	} else {
+                                                        	writeStream.write(`File ${file.name} Uploaded Successfully`)
                                                         }
-						)
-						// remove the file from both the list (filesNames, filesPaths)
-                                                localFileNames.splice(fileIndex, 1)
-                                                filesPaths.splice(fileIndex, 1)
+                                                }
+					)
+					// remove the file from both the list (filesNames, filesPaths)
+                                        localFileNames.splice(fileIndex, 1)
+                                        filesPaths.splice(fileIndex, 1)
+				})
+				// here goes the part to upload the files not pre-exists on google drive
+				// localFileNames variable contains such files; type: list
+				// identify the file's mimeType
+
+				// get the folder name in which this directory is present
+				let folderName = ""
+				filesPaths.forEach((filePath, index) => {
+					folderName = folderIdentifyPattern.exec(filePath)
+					if (!folderName) {
+						folderName = "Obsidian Vault"
+					} else {
+						folderName = folderName[1]
 					}
+					drive.files.list(
+						{
+							q: `name="${folderName}" and trashed=false`,
+							fields: "nextPageToken, files(id)"
+						},
+						(error, response) => {
+							if (error) { throw error } else {
+								const folderData = response.data.files
+
+								// create a new file & update it
+								drive.files.create(
+									{
+										requestBody: {
+											name: localFileNames[index],
+											parents: [folderData[0].id]
+										},
+										media: {
+											mimeType: mime.getType(filePath),
+											body: fs.createReadStream(filePath)
+										}
+									},
+									(error, response) => {
+										if (error) { throw error} 
+									}
+								)
+							}
+						}
+					)
 				})
 			}
 		}
@@ -87,7 +130,8 @@ const scopes = [
 ]
 
 // import the credentials from the file
-const credentials = require("./credentials.json")
+const credentialsPath = os.userInfo().homedir + "/SyncMyObsidian/credentials.json"
+const credentials = require(credentialsPath)
 
 // set-up creds (create a JWT Token)
 const JWTClient = new google.auth.JWT(
