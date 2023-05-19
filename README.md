@@ -18,6 +18,16 @@ It doesn't follow any windows development patterns and architecture, so if you'r
   <img src="img/workflow.png" alt="SyncMyObsidian Workflow">
   </p>
 
+So, here the user needs to run obsidian application (or app Image) using the systemd service file, this service file is responsible for running some scripts in the background before and after running obsidian. 
+
+- Script that runs before the obsidian sets up a log directory and ensures no content in terms of files to be present in the "logs/" directory. 
+
+- The another script that runs after the obsidian gets closed, takes care of number of files user has created/modified in the obsidian vault, it keep traks of those files and write their full path in a JSON based log file called "logs/modified_files.json". Later file paths written on this file is used by JS script to perform upload functionality. 
+
+Above mentioned background scripts are:
+1. [index.js](index.js) (Javascript)
+2. [performStuff.sh](performStuff.sh) (Bash)
+
 ## Setting up the project
 
   ### Requirements
