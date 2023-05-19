@@ -39,7 +39,7 @@ function filesDataFromDrive(drive) {
 	// part will execute if they method is still processing
 
         const [query, filesPaths, localFileNames] = generateQueryForMultipleFiles()
-	const folderIdentifyPattern = RegExp("Obsidian Vault\/(.+?)(\/)")
+	const folderIdentifyPattern = RegExp("\/([^\/]+)\/[^\/]+$")
         var filesNotPresentOnDrive = []
         if (query == -1) {
                 return query
