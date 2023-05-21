@@ -28,9 +28,21 @@ Above mentioned background scripts are:
 1. [index.js](index.js) (Javascript)
 2. [performStuff.sh](performStuff.sh) (Bash)
 
-## Setting up the project
-
-  ### Requirements
+## Setting up the project    
+    
+  ### Requirements    
+  * LINUX *(There's no chance of this repo. to be run on windows platform, so having linux as your main or either side OS is necessary)*
+  * Bash *(You already have it, if you meet the first requirement)*
+  * Node JS & Some dependencies
+    * googleapis
+    * mime
+  * Sign up for the GCP *(google cloud project)* 
+  * Google service account and its credentials
+  * Systemd
+  * Little bit knowledge of systemd *(familiarity with commands is enough)*
+  * Little knowledge of file/folder permissions in Linux 
+  * Google Account & Google Drive *(well, it won't be possible with these two)*
+  * ~A black hoddie, Mr. robot theme volumes, Dark room, ability to talk to yourself~
   
   ### Google service account set-up
   
