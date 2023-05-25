@@ -71,7 +71,8 @@ async function uploadNewFiles(localFileNames, filesPaths) {
 					}
 				}, 
 				(error, response) => {
-					console.log(response.data)
+					reject(error)
+					resolve(response)
 				}
 				)
 			})
@@ -92,12 +93,8 @@ async function uploadExistingFilesData(query, localFileNames, filesPaths) {
 			}
 		)
 		const files = response.data?.files
-		console.log(files)
-		files.forEach((file) => {  
-			console.log(file.name)  
+		files.forEach((file) => {   
 			fileIndex = localFileNames.indexOf(file.name)
-			console.log(fileIndex)
-			console.log("file : ", filesPaths[fileIndex])
 			try {
 				const fileUpdateResponse = drive.files.update(
 					{
@@ -109,10 +106,8 @@ async function uploadExistingFilesData(query, localFileNames, filesPaths) {
 					}
 				)
 				writeStream.write(`File ${file.name} Uploaded Successfully`)
-				localFileNames.splice(fileIndex, 1)  
-                filesPaths.splice(fileIndex, 1)  
-                console.log(filesPaths, localFileNames)
-
+				localFileNames.splice(fileIndex, 1)
+				filesPaths.splice(fileIndex, 1)
 			} catch (fileUpdateError) {
 				console.error(fileUpdateError)
 			}
@@ -134,7 +129,6 @@ async function filesDataFromDrive(drive) {
 	
 	// upload files
 	await uploadExistingFilesData(query, localFileNames, filesPaths)
-	console.log("Data : ", localFileNames, filesPaths)
 	await uploadNewFiles(localFileNames, filesPaths)
 
     writeStream.end() // ending the writeStream
