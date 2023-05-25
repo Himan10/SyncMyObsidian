@@ -33,95 +33,111 @@ function generateQueryForMultipleFiles() {
 	return [query, files.files, fileNames]
 }
 
-function filesDataFromDrive(drive) {
+async function uploadNewFiles(localFileNames, filesPaths) {
+
+	const folderIdentifyPattern = RegExp("\/([^\/]+)\/[^\/]+$")
+	let folderName = ""
+
+	for (let index=0; index < filesPaths.length; index++) {
+		const filePath = filesPaths[index]
+		folderName = folderIdentifyPattern.exec(filePath)
+
+		if (!folderName) {
+			folderName = "Obsidian Vault"
+		} else {
+			folderName = folderName[1]
+		}
+
+		try {
+			const response = await drive.files.list(
+				{
+					q: `name="${folderName}" and trashed=false`,
+					fields: "nextPageToken, files(id)"
+				}
+			)
+			const folderData = response.data.files
+
+			// create a new file & update it
+			await new Promise((resolve, reject) => {
+				drive.files.create(
+				{
+					requestBody: {
+						name: localFileNames[index],
+						parents: [folderData[0].id]
+					},
+					media: {
+						mimeType: mime.getType(filePath),
+						body: fs.createReadStream(filePath)
+					}
+				}, 
+				(error, response) => {
+					console.log(response.data)
+				}
+				)
+			})
+		} catch (error) {
+			console.error(error)
+		}
+	}
+}
+
+async function uploadExistingFilesData(query, localFileNames, filesPaths) {
+	// uplaod multiple files at one go
+	
+	try {
+		const response = await drive.files.list(
+			{
+					q: query,
+					fields: 'nextPageToken, files(id, name, mimeType, createdTime)'
+			}
+		)
+		const files = response.data?.files
+		console.log(files)
+		files.forEach((file) => {  
+			console.log(file.name)  
+			fileIndex = localFileNames.indexOf(file.name)
+			console.log(fileIndex)
+			console.log("file : ", filesPaths[fileIndex])
+			try {
+				const fileUpdateResponse = drive.files.update(
+					{
+						fileId: file.id,
+						media: {
+							mimeType: file.mimeType,
+							body: fs.createReadStream(filesPaths[fileIndex])
+						}
+					}
+				)
+				writeStream.write(`File ${file.name} Uploaded Successfully`)
+				localFileNames.splice(fileIndex, 1)  
+                filesPaths.splice(fileIndex, 1)  
+                console.log(filesPaths, localFileNames)
+
+			} catch (fileUpdateError) {
+				console.error(fileUpdateError)
+			}
+		})
+	} catch (error) {
+		console.error(error)
+	}
+}
+
+async function filesDataFromDrive(drive) {
         // can be used to check if files are present on google drive or not
 	// methods which are part of `drive` returns Promise; which means the later
 	// part will execute if they method is still processing
 
         const [query, filesPaths, localFileNames] = generateQueryForMultipleFiles()
-	const folderIdentifyPattern = RegExp("\/([^\/]+)\/[^\/]+$")
-        var filesNotPresentOnDrive = []
         if (query == -1) {
                 return query
         }
-        drive.files.list(
-                {
-                        q: query,
-                        fields: 'nextPageToken, files(id, name, mimeType, createdTime)'
-                },
-                (error, response) => {
-                        if (error) {
-                                throw error;
-                        } else {
-                                const files = response.data.files;
-                                files.forEach((file) => {
-                                        fileIndex = localFileNames.indexOf(file.name)
-                                        drive.files.update(
-                                        	{
-                                                	fileId: file.id,
-                                                        media: {
-                                                        	mimeType: file.mimeType,
-                                                                body: fs.createReadStream(filesPaths[fileIndex])
-                                                       	}
-                                                },
-                                                (error, response) => {
-                                                	if (error) {
-                                                        	throw error
-                                                       	} else {
-                                                        	writeStream.write(`File ${file.name} Uploaded Successfully`)
-                                                        }
-                                                }
-					)
-					// remove the file from both the list (filesNames, filesPaths)
-                                        localFileNames.splice(fileIndex, 1)
-                                        filesPaths.splice(fileIndex, 1)
-				})
-				// here goes the part to upload the files not pre-exists on google drive
-				// localFileNames variable contains such files; type: list
-				// identify the file's mimeType
+	
+	// upload files
+	await uploadExistingFilesData(query, localFileNames, filesPaths)
+	console.log("Data : ", localFileNames, filesPaths)
+	await uploadNewFiles(localFileNames, filesPaths)
 
-				// get the folder name in which this directory is present
-				let folderName = ""
-				filesPaths.forEach((filePath, index) => {
-					folderName = folderIdentifyPattern.exec(filePath)
-					if (!folderName) {
-						folderName = "Obsidian Vault"
-					} else {
-						folderName = folderName[1]
-					}
-					drive.files.list(
-						{
-							q: `name="${folderName}" and trashed=false`,
-							fields: "nextPageToken, files(id)"
-						},
-						(error, response) => {
-							if (error) { throw error } else {
-								const folderData = response.data.files
-
-								// create a new file & update it
-								drive.files.create(
-									{
-										requestBody: {
-											name: localFileNames[index],
-											parents: [folderData[0].id]
-										},
-										media: {
-											mimeType: mime.getType(filePath),
-											body: fs.createReadStream(filePath)
-										}
-									},
-									(error, response) => {
-										if (error) { throw error} 
-									}
-								)
-							}
-						}
-					)
-				})
-			}
-		}
-	)
-	writeStream.end() // ending the writeStream
+    writeStream.end() // ending the writeStream
 }
 
 // Adding scopes
