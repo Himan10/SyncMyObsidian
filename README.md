@@ -22,7 +22,7 @@ So, here the user needs to run obsidian application (or app Image) using the sys
 
 - Script that runs before the obsidian sets up a log directory and ensures no content in terms of files to be present in the "logs/" directory. 
 
-- The another script that runs after the obsidian gets closed, takes care of number of files user has created/modified in the obsidian vault, it keep traks of those files and write their full path in a JSON based log file called "logs/modified_files.json". Later file paths written on this file is used by JS script to perform upload functionality. 
+- The another script that runs after the obsidian gets closed, takes care of number of files user has created/modified in the obsidian vault, it keep tracks of those files and write their full path in a JSON based log file called "logs/modified_files.json". Later file paths written on this file is used by JS script to perform upload functionality. 
 
 Above mentioned background scripts are:
 1. [index.js](index.js) (Javascript)
@@ -41,8 +41,12 @@ Above mentioned background scripts are:
   * Systemd
   * Little bit knowledge of systemd *(familiarity with commands is enough)*
   * Little knowledge of file/folder permissions in Linux 
-  * Google Account & Google Drive *(well, it won't be possible with these two)*
+  * Google Account & Google Drive *(well, it won't be possible without these two)*
   * ~A black hoddie, Mr. robot theme volumes, Dark room, ability to talk to yourself~
+  
+  ### [ Installation ]
+  Install this github repo using the famous `git clone` CLI tool or however you like,    
+  Remember to download this repo. in your `/home/yourUsername/` directory and `cd` into it. 
   
       
   ### [ Google service account set-up ]
