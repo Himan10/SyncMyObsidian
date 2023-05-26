@@ -83,7 +83,7 @@ Above mentioned background scripts are:
   ![service Account MAnage keys](img/serviceAccountManageKeys.png)  
   ![service Account keys creation](img/serviceAccountKeysCreation.png)   
   
-  Once it's generated, download the credentials and ensure not to compromise for security risk.    
+  Once it's generated, download the credentials, ***rename it with "credentials.json"*** and ensure not to compromise for security risk.    
   **NOTE :** I recently came across the "Workload identify federation" that allows you to use your service account without its keys or credentials, this reduces the security risk in case your keys are compromised. I haven't used it, but will update here soon.    
       
   ![service account key Ids](img/serviceAccountKeyIds.png)
