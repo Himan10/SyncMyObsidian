@@ -156,4 +156,30 @@ Above mentioned background scripts are:
   
   Upon completion of these steps, you'll get a notification sent by the `notify-send` command, in case of a green notification bubble, means everything's good, in case of red notification bubble, means something is wrong. Check the logs of your service by running this `journalctl -u obsidian` to understand more about the issue. 
   
-  ### Android Installation set-up
+  ### [ Android Installation set-up ]
+  Finally after setting up the service account, systemd file and understanding how both of them works, this time you'll need to install an application named [Autosync for Google Drive: DriveSync](https://play.google.com/store/apps/details?id=com.ttxapps.drivesync&hl=en_US). The only con this application comes with is the advertisement, However this application allows you to automatically synchronize the files between your mobile and desktop. Using this fundamental idea of DriveSync, we already have our obsidian vault files prsent on the google drive, now we can simply install this application and use it to get the files and display them on [obsidian mobile application](https://play.google.com/store/apps/details?id=md.obsidian).    
+      
+  Here are the steps of how you can achieve the auto sync. using the DriveSync.    
+      
+  **Step 1:** Install both the application.
+      
+  **Step 2:** Once installed, open the DriveSync application, you'll see two options there, give the necessary permissions and connect your google account with it.    
+      
+  ![DriveSync 1](img/AutoSyncForDrive/Screenshot_20230526-141040.png)
+      
+  **Step 3:** Click on the "Choose what to sync", and then create one folder locally that will be used to store the files downloaded from google drive. 
+  
+  ![DriveSync 2](img/AutoSyncForDrive/Screenshot_20230526-141128.png)
+  ![DriveSync 3](img/AutoSyncForDrive/Screenshot_20230526-141253.png)
+  ![DriveSync 4](img/AutoSyncForDrive/Screenshot_20230526-141333.png)
+      
+  **Step 4:** Open the obsidian application and choose the folder you'd like to open as an obsidian vault, remember only select that folder we created in step 3. 
+      
+  ![DriveSync 5](img/AutoSyncForDrive/Screenshot_20230526-141508.png)
+  ![DriveSync 6](img/AutoSyncForDrive/Screenshot_20230526-141539.png)
+      
+  After this, all your notes and images will be displayed on your obsidian application, something like this: 
+      
+  <img src="img/AutoSyncForDrive/Screenshot_20230526-142054.png" width=300 height=500> <img src="img/AutoSyncForDrive/Screenshot_20230526-142105.png" width=300 height=500>    
+      
+  That's all for now folks.   
