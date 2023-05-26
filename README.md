@@ -33,9 +33,7 @@ Above mentioned background scripts are:
   ### [ Requirements ]
   * LINUX *(There's no chance of this repo. to be run on windows platform, so having linux as your main or either side OS is necessary)*
   * Bash *(You already have it, if you meet the first requirement)*
-  * Node JS & Some dependencies
-    * googleapis
-    * mime
+  * NPM (Node package manager)
   * Sign up for the GCP *(google cloud project)* 
   * Google service account and its credentials
   * Systemd
@@ -46,7 +44,9 @@ Above mentioned background scripts are:
   
   ### [ Installation ]
   Install this github repo using the famous `git clone` CLI tool or however you like,    
-  Remember to download this repo. in your `/home/$(username)/` (or home) directory and `cd` into it. 
+  Remember to download this repo. in your `/home/$(username)/` (or home) directory and `cd` into it.    
+      
+  Run `npm install` in SyncMyObsidian/, it'll read the `package.json` file and install all the required dependencies into your environment.
   
       
   ### [ Google service account set-up ]
@@ -102,14 +102,14 @@ Above mentioned background scripts are:
   Description=Obsidian appImage service file
 
   [Service]
-  User=hi-man
+  User=$(whoami)
   Type=simple
   Environment=DISPLAY=:0
   Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
-  ExecStartPre=/bin/bash /home/hi-man/SyncMyObsidian/performStuff.sh createLogs
-  ExecStart=/home/hi-man/Applications/Obsidian-1.1.16_d65b59bd9180b1d95098945fe63107ac.AppImage
-  ExecStop=/bin/bash /home/hi-man/SyncMyObsidian/performStuff.sh
-  
+  ExecStartPre=/bin/bash /home/$(whoami)/SyncMyObsidian/performStuff.sh createLogs
+  ExecStart=/home/$(whoami)/Applications/Obsidian-1.1.16_d65b59bd9180b1d95098945fe63107ac.AppImage
+  ExecStop=/bin/bash /home/$(whoami)/SyncMyObsidian/performStuff.sh
+
   [Install]
   WantedBy=default.target
   ```
@@ -119,7 +119,9 @@ Above mentioned background scripts are:
   * Once the script mentioned above completes its execution, the control flow moves to *ExecStart*, now here you need to assign the absolute path of your obsidian application to this variable.
   * Again, once the previous script is done, now it's time to execute the scripts that'll be running after obsidian stops. 
 
-  Finally it's done here, but do remember to replace my username i.e., hi-man with yours. 
+  **IMPORTANT:** Now, seems like you've modified the file as per the above steps, now move this file in the `/etc/systemd/system/` directory. My distro is Arch based I am not sure if you have to same directory path, simply do a google search and you'll get it. Give required permissions to the `index.js` and `perform.js` so the service file will be able to execute them.   
+      
+  Finally, this is all you've to do in this step. 
   
   ### [ HOWTO use ]
   In order to make this project run, you'll need to first complete the above steps, once they are completed and you're ready to integrate this with the obsidian application, then here are the following commands and their explanations:    
@@ -127,7 +129,7 @@ Above mentioned background scripts are:
   1. ***systemctl start obsidian:***     
   This command starts your obsidian application as a service, even the logs won't print out on stdout. 
   What happens underneath when you run this command is what you've to understand.
-  <br><br>Path to the script which you've provided to the *ExecStartPre* will execute at first, and it creates a "logs/" directory in the "SyncMyObsidian/" folder, and a file named "ObsidianServiceLogs" under the recently created dir. called "logs/". 
+  <br><br>Absolute path of the script which you've provided to the *ExecStartPre* will execute at first, and it creates a "logs/" directory in the "SyncMyObsidian/" folder, and a file named "ObsidianServiceLogs" under the recently created dir. called "logs/". 
   <br> This log file keep tracks of all those files which have been modified after you started the obsidian. To check, the time & date when you run the application, it's also present in the same file, on the first line.     
   <br>For example:
   ```sh
@@ -142,7 +144,7 @@ Above mentioned background scripts are:
   
   2. ***systemctl stop obsidian:***    
   This command stops the obsidian application, and creates a file named "modified_files.json" under the "logs/" directory.    
-  This file contains a JSON object where a key named "files" contains all the file paths that you've modified while using obsidian. This is an important file which is also used by the script mentioned in the *ExecStop*. If this file somehow isn't created, then there are going to be some issues with the code. 
+  This file contains a JSON object where a key named "files" contains all the file paths that you've modified while using obsidian. This is an important file which is also used by the script mentioned in the *ExecStop*. If this file somehow isn't created, then there are going to be some issues with the code. You can also stop the application either by ctrl+c or clicking on 'x' button or however you like. 
   ```json
   {
     "files" : [
@@ -182,4 +184,4 @@ Above mentioned background scripts are:
       
   <img src="img/AutoSyncForDrive/Screenshot_20230526-142054.png" width=300 height=500> <img src="img/AutoSyncForDrive/Screenshot_20230526-142105.png" width=300 height=500>    
       
-  That's all for now folks.   
+  That's all for now folks, still the development of this repo. is going on. 
