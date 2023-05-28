@@ -184,11 +184,15 @@ Above mentioned background scripts are:
       
   <img src="img/AutoSyncForDrive/Screenshot_20230526-142054.png" width=300 height=500> <img src="img/AutoSyncForDrive/Screenshot_20230526-142105.png" width=300 height=500>    
       
-  That's all for now folks, still the development of this repo. is going on.    
+  Yay! Completed the current set-up finally.  
       
   ### [ TODO List ]    
   * [ ] Making it two way, From desktop to mobile & vice versa
   * [ ] Synchronize files while the obsidian is running    
   * [ ] Add a Demo GIF or Video instead of images
   * [ ] Live Synchornization (maybe? Not sure right now)
-  * [ ] Windows support (maybe? Not sure right now)
+  * [ ] Windows support (maybe? Not sure right now)    
+      
+  ---
+  
+  ***That's all for now folks, still the development of this repo. is going on.***
